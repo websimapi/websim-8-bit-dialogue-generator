@@ -6,6 +6,19 @@ import { ClipGenerator } from './ClipGenerator.js';
 
 export class DialogueGenerator {
     constructor() {
+        // Check if required DOM elements exist
+        const requiredElements = [
+            'basePrompt', 'talkingPrompt', 'dialogueText',
+            'baseFrameCanvas', 'talkingFrameCanvas', 'previewCanvas',
+            'generateBaseFrame', 'generateTalkingFrame', 'cleanupBaseFrame'
+        ];
+
+        for (const elementId of requiredElements) {
+            if (!document.getElementById(elementId)) {
+                throw new Error(`Required element with id '${elementId}' not found`);
+            }
+        }
+
         // Initialize managers
         this.canvasManager = new CanvasManager();
         this.imageGenerator = new ImageGenerator();

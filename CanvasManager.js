@@ -4,6 +4,10 @@ export class CanvasManager {
         this.talkingCanvas = document.getElementById('talkingFrameCanvas');
         this.previewCanvas = document.getElementById('previewCanvas');
 
+        if (!this.baseCanvas || !this.talkingCanvas || !this.previewCanvas) {
+            throw new Error('Required canvas elements not found in DOM');
+        }
+
         this.baseCtx = this.baseCanvas.getContext('2d');
         this.talkingCtx = this.talkingCanvas.getContext('2d');
         this.previewCtx = this.previewCanvas.getContext('2d');
