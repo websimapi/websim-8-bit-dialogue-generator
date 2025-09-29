@@ -48,47 +48,38 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
   }
   const frameSwitchRate = 4;
   const isTalkingFrame = Math.floor(frame / frameSwitchRate) % 2 === 1;
+  const currentFrameUrl = isTalkingFrame ? talkingFrameUrl : baseFrameUrl;
   return /* @__PURE__ */ jsxDEV(AbsoluteFill, { children: [
     /* @__PURE__ */ jsxDEV(
       Img,
       {
-        src: baseFrameUrl,
-        style: { width: "100%", height: "100%", imageRendering: "pixelated" }
-      },
-      void 0,
-      false,
-      {
-        fileName: "<stdin>",
-        lineNumber: 59,
-        columnNumber: 13
-      }
-    ),
-    isTalkingFrame && /* @__PURE__ */ jsxDEV(
-      Img,
-      {
-        src: talkingFrameUrl,
+        src: currentFrameUrl,
         style: {
           width: "100%",
           height: "100%",
-          imageRendering: "pixelated"
+          imageRendering: "pixelated",
+          position: "absolute",
+          // Explicitly position to ensure no layout bounce
+          top: 0,
+          left: 0
         }
       },
       void 0,
       false,
       {
         fileName: "<stdin>",
-        lineNumber: 66,
-        columnNumber: 17
+        lineNumber: 62,
+        columnNumber: 13
       }
     ),
     /* @__PURE__ */ jsxDEV(Audio, { src: audioUrl }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 77,
+      lineNumber: 75,
       columnNumber: 13
     })
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 57,
+    lineNumber: 60,
     columnNumber: 9
   });
 };
