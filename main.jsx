@@ -115,12 +115,12 @@ class DialogueGenerator {
     const systemMessage = `You are a creative prompt refinement expert for 8-bit pixel art image generation. 
         The user is providing a prompt for a character who will be used in a dialogue sequence.
         Your task is to rewrite the user's prompt to ensure the resulting image is:
-        1. An extreme close-up view of the character's face/upper body, suitable for a dialogue portrait, filling most of the 320x240 frame, usually the top 2/3rds.
+        1. An extreme close-up view of the character's face/upper body, suitable for a dialogue portrait, filling most of the 320x240 frame, usually the top 2/3rds. The face must be visually centered horizontally.
         2. Strictly adheres to a retro 8-bit pixel art aesthetic (low resolution, limited color palette, visible pixels).
         3. The composition must clearly define a reserved area at the bottom 1/3rd of the frame for a user interface or text overlay. This area should maintain the background environment style but must NOT contain any text, writing, or explicit UI elements like a named 'dialogue box'.
         4. Must be a single, detailed, image generation prompt.
 
-        Example refinement: If the user says "a dragon in a cave", you might output "Extreme close-up 8-bit pixel art portrait of a fierce red dragon's head inside a dimly lit cave, smoke gently rising. The bottom third of the frame is reserved for a clear RPG user interface text space. High contrast, limited color palette, low resolution 320x240."
+        Example refinement: If the user says "a dragon in a cave", you might output "Extreme close-up 8-bit pixel art portrait of a fierce red dragon's head, horizontally centered, inside a dimly lit cave, smoke gently rising. The bottom third of the frame is reserved for a clear RPG user interface text space. High contrast, limited color palette, low resolution 320x240."
 
         Respond only with the refined prompt string, following the constraints, and no other conversational text.`;
     try {
@@ -189,7 +189,7 @@ class DialogueGenerator {
     this.showLoading("talking", true);
     document.getElementById("talkingStatus").textContent = "Generating...";
     try {
-      const fullPrompt = `Based EXCLUSIVELY on the input image, generate a new image that is pixel-for-pixel identical to the input image except for a slight modification to the character's face/mouth: ${prompt}. Maintain the 8-bit pixel art style, 320x240 resolution, and limited color palette exactly. DO NOT alter the background, lighting, position, scale, or any part of the image outside the immediate area of the mouth opening. Strict 1:1 registration required.`;
+      const fullPrompt = `STRICTLY modify the input image. Generate a new image that is pixel-for-pixel perfectly aligned and identical to the input image except for a change to the character's mouth/face: ${prompt}. The character's position, scale, and background must be rigid and unchanged. Maintain the 8-bit pixel art style, 320x240 resolution, and limited color palette exactly. DO NOT alter the background, lighting, position, scale, or any part of the image outside the immediate area of the mouth opening. Strict 1:1 registration required.`;
       const result = await websim.imageGen({
         prompt: fullPrompt,
         width: 320,
