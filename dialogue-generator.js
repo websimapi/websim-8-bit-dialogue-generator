@@ -26,7 +26,7 @@ export class DialogueGenerator {
         this.previewManager.initializeCanvases();
         this.uiManager.bindEvents();
         this.uiManager.updateUIState();
-        this.storageManager.loadCharacterFromStorage();
+        this.storageManager.loadCharacterFromStorage(this);
     }
 
     // Frame generation methods
