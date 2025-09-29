@@ -109,12 +109,12 @@ class DialogueGenerator {
     const systemMessage = `You are a creative prompt refinement expert for 8-bit pixel art image generation. 
         The user is providing a prompt for a character who will be used in a dialogue sequence.
         Your task is to rewrite the user's prompt to ensure the resulting image is:
-        1. An extreme close-up view of the character's face/upper body, suitable for a dialogue portrait, filling most of the 320x240 frame.
+        1. An extreme close-up view of the character's face/upper body, suitable for a dialogue portrait, filling most of the 320x240 frame, usually the top 2/3rds.
         2. Strictly adheres to a retro 8-bit pixel art aesthetic (low resolution, limited color palette, visible pixels).
-        3. Mentions the presence of a classic 8-bit dialogue box area below the character (or a classic RPG interface element).
+        3. The composition must clearly define a reserved area at the bottom 1/3rd of the frame for a user interface or text overlay. This area should maintain the background environment style but must NOT contain any text, writing, or explicit UI elements like a named 'dialogue box'.
         4. Must be a single, detailed, image generation prompt.
 
-        Example refinement: If the user says "a dragon in a cave", you might output "Extreme close-up 8-bit pixel art portrait of a fierce red dragon's head inside a dimly lit cave, smoke gently rising. A classic 8-bit dialogue box occupies the bottom third of the frame. High contrast, limited color palette, low resolution 320x240."
+        Example refinement: If the user says "a dragon in a cave", you might output "Extreme close-up 8-bit pixel art portrait of a fierce red dragon's head inside a dimly lit cave, smoke gently rising. The bottom third of the frame is reserved for a clear RPG user interface text space. High contrast, limited color palette, low resolution 320x240."
 
         Respond only with the refined prompt string, following the constraints, and no other conversational text.`;
     try {
@@ -133,7 +133,7 @@ class DialogueGenerator {
       return completion.content.trim();
     } catch (error) {
       console.error("Error refining prompt:", error);
-      return `Extreme close-up 8-bit pixel art portrait of a character. ${userPrompt}. Include a dialogue box area below. High quality 8-bit pixel art, low resolution 320x240, limited color palette, retro video game aesthetic.`;
+      return `Extreme close-up 8-bit pixel art portrait of a character. ${userPrompt}. Include a clear area for game UI/text at the bottom, but no dialogue box text. High quality 8-bit pixel art, low resolution 320x240, limited color palette, retro video game aesthetic.`;
     }
   }
   async generateBaseFrame() {
