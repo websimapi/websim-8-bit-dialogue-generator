@@ -189,7 +189,7 @@ class DialogueGenerator {
     this.showLoading("talking", true);
     document.getElementById("talkingStatus").textContent = "Generating...";
     try {
-      const fullPrompt = `High quality 8-bit pixel art, low resolution 320x240, limited color palette, retro video game aesthetic. Based exactly on the input image, modify the character's face: ${prompt}. Critically important: Do not change the background, the character's pose, or any element outside the character's face.`;
+      const fullPrompt = `Based EXCLUSIVELY on the input image, generate a new image that is pixel-for-pixel identical to the input image except for a slight modification to the character's face/mouth: ${prompt}. Maintain the 8-bit pixel art style, 320x240 resolution, and limited color palette exactly. DO NOT alter the background, lighting, position, scale, or any part of the image outside the immediate area of the mouth opening. Strict 1:1 registration required.`;
       const result = await websim.imageGen({
         prompt: fullPrompt,
         width: 320,
@@ -343,13 +343,13 @@ class DialogueGenerator {
           false,
           {
             fileName: "<stdin>",
-            lineNumber: 429,
+            lineNumber: 430,
             columnNumber: 21
           },
           this
         ) }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 428,
+          lineNumber: 429,
           columnNumber: 17
         }, this)
       );

@@ -53,7 +53,7 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
       Img,
       {
         src: baseFrameUrl,
-        style: { width: "100%", height: "100%", objectFit: "cover", imageRendering: "pixelated" }
+        style: { width: "100%", height: "100%", imageRendering: "pixelated" }
       },
       void 0,
       false,
@@ -70,7 +70,6 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
         style: {
           width: "100%",
           height: "100%",
-          objectFit: "cover",
           imageRendering: "pixelated"
         }
       },
@@ -84,7 +83,7 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
     ),
     /* @__PURE__ */ jsxDEV(Audio, { src: audioUrl }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 78,
+      lineNumber: 77,
       columnNumber: 13
     })
   ] }, void 0, true, {
