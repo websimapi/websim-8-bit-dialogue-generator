@@ -220,25 +220,25 @@ export class FrameGenerator {
             generator.reactRoot = createRoot(clipContainer);
 
             generator.reactRoot.render(
-                <div style={{ width: "100%", height: "100%" }}>
-                    <Player
-                        component={DialogueComposition}
-                        durationInFrames={durationInFrames}
-                        fps={FPS}
-                        compositionWidth={320}
-                        compositionHeight={240}
-                        loop={false}
-                        controls
-                        inputProps={{
+                React.createElement('div', { style: { width: "100%", height: "100%" } },
+                    React.createElement(Player, {
+                        component: DialogueComposition,
+                        durationInFrames,
+                        fps: FPS,
+                        compositionWidth: 320,
+                        compositionHeight: 240,
+                        loop: false,
+                        controls: true,
+                        inputProps: {
                             baseFrameUrl: generator.baseFrameData,
                             talkingFrameUrl: generator.talkingFrameData,
                             audioUrl: generator.audioUrl,
                             audioDurationSeconds: generator.audioDurationSeconds
-                        }}
-                        autoplay={false}
-                        style={{ maxWidth: "100%", maxHeight: "100%" }}
-                    />
-                </div>
+                        },
+                        autoplay: false,
+                        style: { maxWidth: "100%", maxHeight: "100%" }
+                    })
+                )
             );
 
             document.getElementById('clipStatus').textContent = 'Clip Ready! Press Play on the video player.';

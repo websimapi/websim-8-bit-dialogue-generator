@@ -1,4 +1,3 @@
-import { jsxDEV } from "react/jsx-dev-runtime";
 import React from "react";
 import {
   AbsoluteFill,
@@ -40,48 +39,31 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
     img2.src = talkingFrameUrl;
   }, [baseFrameUrl, talkingFrameUrl]);
   if (!assetsLoaded) {
-    return /* @__PURE__ */ jsxDEV(AbsoluteFill, { style: { backgroundColor: "#1a1a2e", justifyContent: "center", alignItems: "center", color: "#00ff00", fontSize: 20 }, children: "Loading Assets..." }, void 0, false, {
-      fileName: "<stdin>",
-      lineNumber: 45,
-      columnNumber: 16
-    });
+    return React.createElement(
+      AbsoluteFill,
+      { style: { backgroundColor: "#1a1a2e", justifyContent: "center", alignItems: "center", color: "#00ff00", fontSize: 20 } },
+      "Loading Assets..."
+    );
   }
   const frameSwitchRate = 4;
   const isTalkingFrame = Math.floor(frame / frameSwitchRate) % 2 === 1;
   const currentFrameUrl = isTalkingFrame ? talkingFrameUrl : baseFrameUrl;
-  return /* @__PURE__ */ jsxDEV(AbsoluteFill, { children: [
-    /* @__PURE__ */ jsxDEV(
-      Img,
-      {
-        src: currentFrameUrl,
-        style: {
-          width: "100%",
-          height: "100%",
-          imageRendering: "pixelated",
-          position: "absolute",
-          // Explicitly position to ensure no layout bounce
-          top: 0,
-          left: 0
-        }
-      },
-      void 0,
-      false,
-      {
-        fileName: "<stdin>",
-        lineNumber: 62,
-        columnNumber: 13
+  return React.createElement(
+    AbsoluteFill,
+    null,
+    React.createElement(Img, {
+      src: currentFrameUrl,
+      style: {
+        width: "100%",
+        height: "100%",
+        imageRendering: "pixelated",
+        position: "absolute",
+        top: 0,
+        left: 0
       }
-    ),
-    /* @__PURE__ */ jsxDEV(Audio, { src: audioUrl }, void 0, false, {
-      fileName: "<stdin>",
-      lineNumber: 75,
-      columnNumber: 13
-    })
-  ] }, void 0, true, {
-    fileName: "<stdin>",
-    lineNumber: 60,
-    columnNumber: 9
-  });
+    }),
+    React.createElement(Audio, { src: audioUrl })
+  );
 };
 export {
   DialogueComposition
