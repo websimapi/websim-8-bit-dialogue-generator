@@ -45,6 +45,7 @@ class DialogueGenerator {
   bindEvents() {
     document.getElementById("generateBaseFrame").addEventListener("click", () => this.generateBaseFrame());
     document.getElementById("generateTalkingFrame").addEventListener("click", () => this.generateTalkingFrame());
+    document.getElementById("cleanupBaseFrame").addEventListener("click", () => this.cleanupBaseFrame());
     document.getElementById("previewLoop").addEventListener("click", () => this.startPreviewLoop());
     document.getElementById("stopLoop").addEventListener("click", () => this.stopPreviewLoop());
     document.getElementById("generateClip").addEventListener("click", () => this.generateClip());
@@ -59,6 +60,7 @@ class DialogueGenerator {
     const hasDialogue = this.dialogueTextInput.value.trim().length > 0;
     this.basePromptInput.disabled = this.isGenerating || hasBase;
     document.getElementById("generateBaseFrame").disabled = this.isGenerating;
+    document.getElementById("cleanupBaseFrame").disabled = this.isGenerating || !hasBase;
     this.talkingCanvas.classList.toggle("hidden", !hasBase);
     this.talkingPromptInput.disabled = this.isGenerating || !hasBase;
     document.getElementById("generateTalkingFrame").disabled = this.isGenerating || !hasBase;
@@ -75,6 +77,10 @@ class DialogueGenerator {
       loadingIconId = "clipLoadingIcon";
       btnTextClass = "clip-text";
       btn = document.getElementById("generateClip");
+    } else if (target === "cleanup") {
+      loadingIconId = "cleanupLoadingIcon";
+      btnTextClass = "cleanup-text";
+      btn = document.getElementById("cleanupBaseFrame");
     } else {
       loadingIconId = target + "LoadingIcon";
       btnTextClass = target + "-text";
@@ -144,6 +150,11 @@ class DialogueGenerator {
     }
     this.showLoading("base", true);
     document.getElementById("baseStatus").textContent = "Refining prompt (AI thinking)...";
+    this.stopPreviewLoop();
+    this.clearClipPlayer();
+    this.talkingFrameData = null;
+    this.initializeCanvases([this.talkingCtx]);
+    document.getElementById("talkingStatus").textContent = "";
     try {
       const refinedPrompt = await this._refineBasePrompt(prompt);
       console.log("Refined Base Prompt:", refinedPrompt);
@@ -198,6 +209,40 @@ class DialogueGenerator {
       this.talkingFrameData = null;
     } finally {
       this.showLoading("talking", false);
+      this.updateUIState();
+    }
+  }
+  async cleanupBaseFrame() {
+    if (!this.baseFrameData) return;
+    this.showLoading("cleanup", true);
+    document.getElementById("baseStatus").textContent = "Cleaning up base frame (AI Refine)...";
+    try {
+      this.stopPreviewLoop();
+      this.clearClipPlayer();
+      const userPrompt = this.basePromptInput.value.trim();
+      const refinedPrompt = await this._refineBasePrompt(userPrompt);
+      const cleanupPrompt = `Refine and clean up this 8-bit pixel art image based on the prompt: "${refinedPrompt}". Ensure the character remains in the extreme close-up view and the background and composition are preserved exactly. Focus on removing minor artifacts and improving overall pixel consistency and quality, while strictly maintaining the 8-bit pixel art aesthetic.`;
+      const result = await websim.imageGen({
+        prompt: cleanupPrompt,
+        width: 320,
+        height: 240,
+        aspect_ratio: "4:3",
+        image_inputs: [{
+          url: this.baseFrameData
+        }]
+      });
+      await this.loadImageToCanvas(result.url, this.baseCtx);
+      this.baseFrameData = this.baseCanvas.toDataURL("image/png");
+      this.previewCtx.drawImage(this.baseCanvas, 0, 0);
+      document.getElementById("baseStatus").textContent = "Base Frame Cleaned Up Successfully!";
+      this.talkingFrameData = null;
+      this.initializeCanvases([this.talkingCtx]);
+      document.getElementById("talkingStatus").textContent = "Talking Frame invalidated. Please regenerate.";
+    } catch (error) {
+      console.error("Error cleaning up base frame:", error);
+      document.getElementById("baseStatus").textContent = "Cleanup Failed.";
+    } finally {
+      this.showLoading("cleanup", false);
       this.updateUIState();
     }
   }
@@ -298,13 +343,13 @@ class DialogueGenerator {
           false,
           {
             fileName: "<stdin>",
-            lineNumber: 363,
+            lineNumber: 429,
             columnNumber: 21
           },
           this
         ) }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 362,
+          lineNumber: 428,
           columnNumber: 17
         }, this)
       );
