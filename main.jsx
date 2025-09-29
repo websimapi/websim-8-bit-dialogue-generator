@@ -105,6 +105,37 @@ class DialogueGenerator {
       img.src = imageUrl;
     });
   }
+  async _refineBasePrompt(userPrompt) {
+    const systemMessage = `You are a creative prompt refinement expert for 8-bit pixel art image generation. 
+        The user is providing a prompt for a character who will be used in a dialogue sequence.
+        Your task is to rewrite the user's prompt to ensure the resulting image is:
+        1. An extreme close-up view of the character's face/upper body, suitable for a dialogue portrait, filling most of the 320x240 frame.
+        2. Strictly adheres to a retro 8-bit pixel art aesthetic (low resolution, limited color palette, visible pixels).
+        3. Mentions the presence of a classic 8-bit dialogue box area below the character (or a classic RPG interface element).
+        4. Must be a single, detailed, image generation prompt.
+
+        Example refinement: If the user says "a dragon in a cave", you might output "Extreme close-up 8-bit pixel art portrait of a fierce red dragon's head inside a dimly lit cave, smoke gently rising. A classic 8-bit dialogue box occupies the bottom third of the frame. High contrast, limited color palette, low resolution 320x240."
+
+        Respond only with the refined prompt string, following the constraints, and no other conversational text.`;
+    try {
+      const completion = await websim.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content: systemMessage
+          },
+          {
+            role: "user",
+            content: userPrompt
+          }
+        ]
+      });
+      return completion.content.trim();
+    } catch (error) {
+      console.error("Error refining prompt:", error);
+      return `Extreme close-up 8-bit pixel art portrait of a character. ${userPrompt}. Include a dialogue box area below. High quality 8-bit pixel art, low resolution 320x240, limited color palette, retro video game aesthetic.`;
+    }
+  }
   async generateBaseFrame() {
     const prompt = this.basePromptInput.value.trim();
     if (!prompt) {
@@ -112,11 +143,13 @@ class DialogueGenerator {
       return;
     }
     this.showLoading("base", true);
-    document.getElementById("baseStatus").textContent = "Generating...";
+    document.getElementById("baseStatus").textContent = "Refining prompt (AI thinking)...";
     try {
-      const fullPrompt = `High quality 8-bit pixel art, low resolution 320x240, limited color palette, retro video game aesthetic. Character dialogue scene: ${prompt}.`;
+      const refinedPrompt = await this._refineBasePrompt(prompt);
+      console.log("Refined Base Prompt:", refinedPrompt);
+      document.getElementById("baseStatus").textContent = "Generating image...";
       const result = await websim.imageGen({
-        prompt: fullPrompt,
+        prompt: refinedPrompt,
         width: 320,
         height: 240,
         aspect_ratio: "4:3"
@@ -265,13 +298,13 @@ class DialogueGenerator {
           false,
           {
             fileName: "<stdin>",
-            lineNumber: 325,
+            lineNumber: 363,
             columnNumber: 21
           },
           this
         ) }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 324,
+          lineNumber: 362,
           columnNumber: 17
         }, this)
       );
