@@ -1,4 +1,3 @@
-import { jsxDEV } from "react/jsx-dev-runtime";
 import React from "react";
 import {
   AbsoluteFill,
@@ -13,15 +12,25 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const renderHandle = React.useRef(delayRender());
+  const continued = React.useRef(false);
   const [assetsLoaded, setAssetsLoaded] = React.useState(false);
   React.useEffect(() => {
+    const safety = setTimeout(() => {
+      if (!continued.current) {
+        continued.current = true;
+        continueRender(renderHandle.current);
+      }
+    }, 1e4);
     let loadedCount = 0;
     const totalAssets = 2;
     const checkLoad = () => {
       loadedCount++;
       if (loadedCount === totalAssets) {
         setAssetsLoaded(true);
-        continueRender(renderHandle.current);
+        if (!continued.current) {
+          continued.current = true;
+          continueRender(renderHandle.current);
+        }
       }
     };
     const img1 = new Image();
@@ -38,50 +47,40 @@ const DialogueComposition = ({ baseFrameUrl, talkingFrameUrl, audioUrl, audioDur
       checkLoad();
     };
     img2.src = talkingFrameUrl;
+    return () => {
+      clearTimeout(safety);
+      if (!continued.current) {
+        continued.current = true;
+        continueRender(renderHandle.current);
+      }
+    };
   }, [baseFrameUrl, talkingFrameUrl]);
   if (!assetsLoaded) {
-    return /* @__PURE__ */ jsxDEV(AbsoluteFill, { style: { backgroundColor: "#1a1a2e", justifyContent: "center", alignItems: "center", color: "#00ff00", fontSize: 20 }, children: "Loading Assets..." }, void 0, false, {
-      fileName: "<stdin>",
-      lineNumber: 45,
-      columnNumber: 16
-    });
+    return React.createElement(
+      AbsoluteFill,
+      { style: { backgroundColor: "#1a1a2e", justifyContent: "center", alignItems: "center", color: "#00ff00", fontSize: 20 } },
+      "Loading Assets..."
+    );
   }
   const frameSwitchRate = 4;
   const isTalkingFrame = Math.floor(frame / frameSwitchRate) % 2 === 1;
   const currentFrameUrl = isTalkingFrame ? talkingFrameUrl : baseFrameUrl;
-  return /* @__PURE__ */ jsxDEV(AbsoluteFill, { children: [
-    /* @__PURE__ */ jsxDEV(
-      Img,
-      {
-        src: currentFrameUrl,
-        style: {
-          width: "100%",
-          height: "100%",
-          imageRendering: "pixelated",
-          position: "absolute",
-          // Explicitly position to ensure no layout bounce
-          top: 0,
-          left: 0
-        }
-      },
-      void 0,
-      false,
-      {
-        fileName: "<stdin>",
-        lineNumber: 62,
-        columnNumber: 13
+  return React.createElement(
+    AbsoluteFill,
+    null,
+    React.createElement(Img, {
+      src: currentFrameUrl,
+      style: {
+        width: "100%",
+        height: "100%",
+        imageRendering: "pixelated",
+        position: "absolute",
+        top: 0,
+        left: 0
       }
-    ),
-    /* @__PURE__ */ jsxDEV(Audio, { src: audioUrl }, void 0, false, {
-      fileName: "<stdin>",
-      lineNumber: 75,
-      columnNumber: 13
-    })
-  ] }, void 0, true, {
-    fileName: "<stdin>",
-    lineNumber: 60,
-    columnNumber: 9
-  });
+    }),
+    React.createElement(Audio, { src: audioUrl })
+  );
 };
 export {
   DialogueComposition
