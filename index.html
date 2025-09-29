@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Bit Dialogue Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">8-BIT DIALOGUE GENERATOR</h1>
+            <div class="subtitle">Character State Animation & TTS</div>
+        </header>
+
+        <main class="main-content">
+            
+            <!-- Character Setup Section -->
+            <div class="character-setup-section">
+                <div class="setup-area base-frame-setup">
+                    <h2>1. CREATE BASE FRAME (MOUTH CLOSED)</h2>
+                    <canvas id="baseFrameCanvas" width="320" height="240" class="frame-canvas"></canvas>
+                    <textarea 
+                        id="basePrompt" 
+                        class="prompt-input" 
+                        placeholder="Describe the 8-bit character and background (e.g., 'A pixel knight standing next to a dialogue box in a forest clearing')"
+                        rows="2"></textarea>
+                    
+                    <button id="generateBaseFrame" class="btn btn-primary">
+                        <span class="btn-text base-text">GENERATE BASE FRAME</span>
+                        <div class="loading" id="baseLoadingIcon" style="display: none;">
+                            <div class="loading-bar"></div>
+                        </div>
+                    </button>
+                    <p class="frame-status" id="baseStatus"></p>
+                </div>
+                
+                <div class="setup-area talking-frame-setup">
+                    <h2>2. CREATE TALKING FRAME (MOUTH OPEN)</h2>
+                    <canvas id="talkingFrameCanvas" width="320" height="240" class="frame-canvas hidden"></canvas>
+                    <textarea 
+                        id="talkingPrompt" 
+                        class="prompt-input" 
+                        placeholder="Describe the change from the base frame (e.g., 'The knight opens their mouth slightly')"
+                        rows="2" disabled></textarea>
+                    <button id="generateTalkingFrame" class="btn btn-primary" disabled>
+                        <span class="btn-text talking-text">GENERATE TALKING FRAME</span>
+                        <div class="loading" id="talkingLoadingIcon" style="display: none;">
+                            <div class="loading-bar"></div>
+                        </div>
+                    </button>
+                    <p class="frame-status" id="talkingStatus"></p>
+                </div>
+
+            </div>
+
+            <!-- Dialogue and Playback Section -->
+            <div class="dialogue-section">
+                <h2>3. GENERATE DIALOGUE & CLIP</h2>
+                <div class="preview-display">
+                    <canvas id="previewCanvas" width="320" height="240" class="frame-canvas"></canvas>
+                </div>
+                
+                <div class="dialogue-controls">
+                    <label for="dialogueText" class="label">DIALOGUE TEXT:</label>
+                    <textarea 
+                        id="dialogueText" 
+                        class="prompt-input" 
+                        placeholder="Enter the dialogue for the character to speak..."
+                        rows="4"></textarea>
+
+                    <div class="loop-controls">
+                        <button id="previewLoop" class="btn btn-secondary" disabled>PREVIEW ANIMATION LOOP</button>
+                        <button id="stopLoop" class="btn btn-secondary" disabled>STOP PREVIEW</button>
+                    </div>
+
+                    <button id="generateClip" class="btn btn-primary" disabled>
+                        <span class="btn-text clip-text">GENERATE DIALOGUE CLIP (with TTS)</span>
+                        <div class="loading" id="clipLoadingIcon" style="display: none;">
+                            <div class="loading-bar"></div>
+                        </div>
+                    </button>
+                    
+                    <audio id="audioPlayer" controls style="display: none; width: 100%; margin-top: 10px;"></audio>
+                </div>
+
+                <div class="storage-controls project-controls">
+                    <button id="saveCharacter" class="btn btn-secondary" disabled>SAVE CHARACTER</button>
+                    <button id="loadCharacter" class="btn btn-secondary">LOAD CHARACTER</button>
+                    <button id="newCharacter" class="btn btn-secondary">NEW CHARACTER</button>
+                </div>
+            </div>
+        </main>
+
+        <div class="tips">
+            <div class="tips-header">💡 USAGE TIPS</div>
+            <ul>
+                <li>Start by generating the Base Frame, then the Talking Frame.</li>
+                <li>For the Talking Frame prompt, focus *only* on the mouth/face change.</li>
+                <li>Use 'SAVE CHARACTER' to store your frame pair locally for later use.</li>
+                <li>The animation switches frames approximately 8 times per second.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4c6229722a6346bc8eb5cb0e5eae5d41","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
