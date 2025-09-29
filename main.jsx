@@ -1,5 +1,6 @@
 import React from "react";
-import { DialogueGenerator } from "./dialogue-generator.js";
+import { createRoot } from "react-dom/client";
+import { DialogueGenerator } from "./DialogueGenerator.js";
 document.addEventListener("DOMContentLoaded", () => {
   window.dialogueGenerator = new DialogueGenerator();
 });

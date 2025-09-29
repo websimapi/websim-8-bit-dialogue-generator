@@ -1,43 +1,70 @@
-export class PreviewManager {
+export class CanvasManager {
     constructor() {
-        // Canvas elements and contexts
         this.baseCanvas = document.getElementById('baseFrameCanvas');
         this.talkingCanvas = document.getElementById('talkingFrameCanvas');
         this.previewCanvas = document.getElementById('previewCanvas');
-        
+
         this.baseCtx = this.baseCanvas.getContext('2d');
         this.talkingCtx = this.talkingCanvas.getContext('2d');
         this.previewCtx = this.previewCanvas.getContext('2d');
-        
+
         this.loopIntervalId = null;
+
+        this.initializeCanvases();
     }
 
-    initializeCanvases(contexts = [this.baseCtx, this.talkingCtx, this.previewCtx]) {
-        contexts.forEach(ctx => {
-            // Set up canvas with pixelated rendering
+    initializeCanvases() {
+        [this.baseCtx, this.talkingCtx, this.previewCtx].forEach(ctx => {
             ctx.imageSmoothingEnabled = false;
             ctx.webkitImageSmoothingEnabled = false;
             ctx.mozImageSmoothingEnabled = false;
             ctx.msImageSmoothingEnabled = false;
 
-            // Fill with default background
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         });
     }
 
-    async loadImageToCanvas(imageUrl, canvasContext) {
+    async loadImageToCanvas(imageUrl, canvasType) {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => {
-                canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
-                canvasContext.drawImage(img, 0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+                const ctx = this.getContext(canvasType);
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
                 resolve();
             };
             img.onerror = reject;
             img.src = imageUrl;
         });
+    }
+
+    getContext(canvasType) {
+        switch (canvasType) {
+            case 'base': return this.baseCtx;
+            case 'talking': return this.talkingCtx;
+            case 'preview': return this.previewCtx;
+            default: throw new Error(`Unknown canvas type: ${canvasType}`);
+        }
+    }
+
+    getCanvasDataURL(canvasType) {
+        const canvas = canvasType === 'base' ? this.baseCanvas : this.talkingCanvas;
+        return canvas.toDataURL('image/png');
+    }
+
+    updatePreview(imageDataUrl) {
+        this.loadImageToCanvas(imageDataUrl, 'preview');
+    }
+
+    clearTalkingCanvas() {
+        this.talkingCtx.fillStyle = '#1a1a2e';
+        this.talkingCtx.fillRect(0, 0, this.talkingCanvas.width, this.talkingCanvas.height);
+    }
+
+    clearAllCanvases() {
+        this.initializeCanvases();
     }
 
     startPreviewLoop(baseFrameData, talkingFrameData) {
@@ -49,7 +76,7 @@ export class PreviewManager {
         const talkingImg = new Image();
         talkingImg.src = talkingFrameData;
 
-        let frameToggle = true; // true for base, false for talking
+        let frameToggle = true;
 
         const drawFrame = () => {
             this.previewCtx.clearRect(0, 0, this.previewCanvas.width, this.previewCanvas.height);
@@ -63,7 +90,6 @@ export class PreviewManager {
             }
         };
 
-        // 125ms interval = 8 frames per second (classic 8-bit speed)
         this.loopIntervalId = setInterval(drawFrame, 125);
     }
 
@@ -72,5 +98,9 @@ export class PreviewManager {
             clearInterval(this.loopIntervalId);
             this.loopIntervalId = null;
         }
+    }
+
+    isLooping() {
+        return this.loopIntervalId !== null;
     }
 }
