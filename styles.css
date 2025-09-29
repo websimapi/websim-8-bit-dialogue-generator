@@ -41,111 +41,65 @@ body {
     letter-spacing: 2px;
 }
 
+/* MAIN LAYOUT */
 .main-content {
     display: grid;
-    grid-template-columns: 1fr 400px;
+    grid-template-columns: 2fr 1fr; /* Character Setup area wider than Dialogue area */
+    max-width: 900px; /* Restrict max width to make canvases look better */
+    margin: 0 auto 30px auto;
     gap: 30px;
-    margin-bottom: 30px;
 }
 
-.video-section {
+.character-setup-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     background: #0f0f23;
     border: 3px solid #00ff00;
     padding: 20px;
 }
 
-.frame-display {
-    margin-bottom: 20px;
+.setup-area {
+    padding: 10px;
+    border: 2px dotted #666;
 }
 
-#currentFrame {
+.setup-area h2 {
+    font-size: 10px;
+    margin-bottom: 15px;
+    color: #ffff00;
+}
+
+.dialogue-section {
+    background: #0f0f23;
+    border: 3px solid #00ff00;
+    padding: 20px;
+}
+
+.preview-display {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.frame-canvas {
     width: 100%;
     height: auto;
+    max-width: 320px;
     border: 2px solid #ffff00;
     background: #000;
     image-rendering: pixelated;
     image-rendering: -moz-crisp-edges;
     image-rendering: crisp-edges;
+    margin: 0 auto;
+    display: block; /* Ensure canvas is block level for centering */
 }
 
-.frame-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    font-size: 8px;
+/* Utility class */
+.hidden {
+    display: none !important;
 }
 
-.frame-controls {
-    display: flex;
-    gap: 5px;
-}
-
-.timeline {
-    border-top: 2px solid #ffff00;
-    padding-top: 15px;
-}
-
-.timeline-header {
-    font-size: 10px;
-    color: #ffff00;
-    margin-bottom: 10px;
-}
-
-.timeline-frames {
-    display: flex;
-    gap: 5px;
-    overflow-x: auto;
-    padding: 5px 0;
-}
-
-.timeline-frame {
-    flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border: 2px solid #666;
-    background: #000;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.2s;
-}
-
-.timeline-frame:hover {
-    border-color: #ffff00;
-}
-
-.timeline-frame.active {
-    border-color: #00ff00;
-}
-
-.frame-thumb {
-    width: 100%;
-    height: 80%;
-    background: #333;
-    image-rendering: pixelated;
-}
-
-.timeline-frame span {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    font-size: 6px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.8);
-    color: #00ff00;
-}
-
-.controls-section {
-    background: #0f0f23;
-    border: 3px solid #00ff00;
-    padding: 20px;
-}
-
-.prompt-area {
-    margin-bottom: 30px;
-}
-
+/* Control Styles */
 .label {
     display: block;
     font-size: 8px;
@@ -164,16 +118,13 @@ body {
     padding: 10px;
     resize: vertical;
     min-height: 80px;
+    margin-bottom: 15px;
 }
 
 .prompt-input:focus {
     outline: none;
     border-color: #ffff00;
     box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
-}
-
-.generate-controls {
-    margin-top: 15px;
 }
 
 .btn {
@@ -199,6 +150,8 @@ body {
     border-color: #00ff00;
     width: 100%;
     margin-bottom: 15px;
+    /* Ensure height consistency for loading animation */
+    min-height: 40px; 
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -210,8 +163,7 @@ body {
 .btn-secondary {
     color: #00ff00;
     border-color: #00ff00;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    flex-grow: 1;
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -219,23 +171,37 @@ body {
     color: #000;
 }
 
-.btn-small {
+.loop-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.storage-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.frame-status {
+    font-size: 7px;
     color: #ffff00;
-    border-color: #ffff00;
-    padding: 5px 8px;
-    font-size: 6px;
+    margin-top: 5px;
+    min-height: 14px;
 }
 
-.btn-small:hover:not(:disabled) {
-    background: #ffff00;
-    color: #000;
-}
-
+/* Loading animation styles */
 .loading {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%; /* For centering the bar */
+    text-align: center;
+}
+
+.btn-text {
+    transition: opacity 0.3s;
 }
 
 .loading-bar {
@@ -245,6 +211,7 @@ body {
     border: 1px solid #00ff00;
     position: relative;
     overflow: hidden;
+    margin: 0 auto;
 }
 
 .loading-bar::after {
@@ -263,64 +230,14 @@ body {
     100% { left: 100%; }
 }
 
-.options {
-    margin-top: 10px;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    font-size: 8px;
-    cursor: pointer;
-    color: #ffff00;
-}
-
-.checkbox-label input[type="checkbox"] {
-    display: none;
-}
-
-.checkmark {
-    width: 12px;
-    height: 12px;
-    border: 2px solid #ffff00;
-    margin-right: 8px;
-    position: relative;
-    background: #000;
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark {
-    background: #ffff00;
-}
-
-.checkbox-label input[type="checkbox"]:checked + .checkmark::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    left: 3px;
-    width: 3px;
-    height: 6px;
-    border: solid #000;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-}
-
-.project-controls {
-    border-top: 2px solid #666;
-    padding-top: 20px;
-}
-
-.project-info {
-    margin-top: 15px;
-    font-size: 6px;
-    color: #888;
-    line-height: 1.5;
-}
-
+/* Tips */
 .tips {
     background: #0f0f23;
     border: 3px solid #ffff00;
     padding: 20px;
     margin-top: 20px;
+    max-width: 900px;
+    margin: 20px auto;
 }
 
 .tips-header {
@@ -348,18 +265,36 @@ body {
     color: #00ff00;
 }
 
-@media (max-width: 768px) {
+/* Responsive adjustments */
+@media (max-width: 950px) {
     .main-content {
         grid-template-columns: 1fr;
-        gap: 20px;
+        max-width: 600px;
+    }
+
+    .character-setup-section {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
     }
     
     .title {
         font-size: 16px;
     }
     
-    .container {
-        padding: 10px;
+    .frame-canvas {
+        max-width: 100%;
+    }
+    
+    .loop-controls, .storage-controls {
+        flex-direction: column;
+    }
+    
+    .btn-secondary {
+        margin-right: 0;
     }
 }
-
